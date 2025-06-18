@@ -16,18 +16,18 @@ public record Configuration(
 
 [BicepDiscriminatorType(nameof(ConfigurationBase), "authenticationMode", typeof(ConfigurationEntra), typeof(ConfigurationPat))]
 public record ConfigurationBase(
-    [property: TypeAnnotation("", ObjectTypePropertyFlags.None)]
+    [property: TypeAnnotation("Test property", ObjectTypePropertyFlags.None)]
     string SomeRandomProperty);
 
 public record ConfigurationEntra(
-    [property: TypeAnnotation("", ObjectTypePropertyFlags.Required), BicepStringLiteralValue("Entra")]
-    string AuthenticationMode = "Entra");
+    [property: TypeAnnotation("Authentication mode to login to the marketplace", ObjectTypePropertyFlags.Required), BicepStringLiteralValue(nameof(AuthenticationMode.Entra))]
+    AuthenticationMode AuthenticationMode);
 
 public record ConfigurationPat(
-    [property: TypeAnnotation("", ObjectTypePropertyFlags.Required, true)]
+    [property: TypeAnnotation("PAT token to use", ObjectTypePropertyFlags.Required, true)]
     string Token,
-    [property: TypeAnnotation("", ObjectTypePropertyFlags.Required), BicepStringLiteralValue("PAT")]
-    string AuthenticationMode
+    [property: TypeAnnotation("Authentication mode to login to the marketplace", ObjectTypePropertyFlags.Required), BicepStringLiteralValue(nameof(AuthenticationMode.PAT))]
+    AuthenticationMode AuthenticationMode
 );
 
 public enum AuthenticationMode

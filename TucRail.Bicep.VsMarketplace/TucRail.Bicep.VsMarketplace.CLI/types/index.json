@@ -1,10 +1,10 @@
 {
   "resources": {
     "VstsPublisher/VstsExtension": {
-      "$ref": "types.json#/18"
+      "$ref": "types.json#/19"
     },
     "VstsPublisher": {
-      "$ref": "types.json#/22"
+      "$ref": "types.json#/23"
     }
   },
   "resourceFunctions": {},
@@ -13,7 +13,7 @@
     "version": "1.0.0",
     "isSingleton": true,
     "configurationType": {
-      "$ref": "types.json#/4"
+      "$ref": "types.json#/6"
     }
   },
   "fallbackResourceType": null
