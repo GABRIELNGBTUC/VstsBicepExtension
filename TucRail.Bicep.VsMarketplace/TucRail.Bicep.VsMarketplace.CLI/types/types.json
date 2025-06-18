@@ -1,0 +1,257 @@
+[
+  {
+    "$type": "StringLiteralType",
+    "value": "PAT"
+  },
+  {
+    "$type": "StringLiteralType",
+    "value": "Entra"
+  },
+  {
+    "$type": "UnionType",
+    "elements": [
+      {
+        "$ref": "#/0"
+      },
+      {
+        "$ref": "#/1"
+      }
+    ]
+  },
+  {
+    "$type": "StringType",
+    "sensitive": true,
+    "minLength": null,
+    "maxLength": null,
+    "pattern": null
+  },
+  {
+    "$type": "ObjectType",
+    "name": "configuration",
+    "properties": {
+      "authenticationMode": {
+        "type": {
+          "$ref": "#/2"
+        },
+        "flags": 1,
+        "description": "Authentication mode used. Either PAT or Entra. If entra is used, the credential chain used can be found here https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication/credential-chains?tabs=dac#defaultazurecredential-overview"
+      },
+      "patToken": {
+        "type": {
+          "$ref": "#/3"
+        },
+        "flags": 0,
+        "description": "PAT"
+      }
+    },
+    "additionalProperties": null,
+    "sensitive": null
+  },
+  {
+    "$type": "StringType",
+    "sensitive": null,
+    "minLength": null,
+    "maxLength": null,
+    "pattern": null
+  },
+  {
+    "$type": "StringLiteralType",
+    "value": "AzureDevOps"
+  },
+  {
+    "$type": "StringLiteralType",
+    "value": "VisualStudio"
+  },
+  {
+    "$type": "StringLiteralType",
+    "value": "VisualStudioCode"
+  },
+  {
+    "$type": "UnionType",
+    "elements": [
+      {
+        "$ref": "#/6"
+      },
+      {
+        "$ref": "#/7"
+      },
+      {
+        "$ref": "#/8"
+      }
+    ]
+  },
+  {
+    "$type": "NullType"
+  },
+  {
+    "$type": "UnionType",
+    "elements": [
+      {
+        "$ref": "#/9"
+      },
+      {
+        "$ref": "#/10"
+      }
+    ]
+  },
+  {
+    "$type": "NullType"
+  },
+  {
+    "$type": "UnionType",
+    "elements": [
+      {
+        "$ref": "#/5"
+      },
+      {
+        "$ref": "#/12"
+      }
+    ]
+  },
+  {
+    "$type": "BooleanType"
+  },
+  {
+    "$type": "NullType"
+  },
+  {
+    "$type": "UnionType",
+    "elements": [
+      {
+        "$ref": "#/5"
+      },
+      {
+        "$ref": "#/15"
+      }
+    ]
+  },
+  {
+    "$type": "ObjectType",
+    "name": "VstsExtension",
+    "properties": {
+      "name": {
+        "type": {
+          "$ref": "#/5"
+        },
+        "flags": 17,
+        "description": "The name of the extension"
+      },
+      "publisherName": {
+        "type": {
+          "$ref": "#/5"
+        },
+        "flags": 17,
+        "description": "The extension publisher"
+      },
+      "lastUpdatedDate": {
+        "type": {
+          "$ref": "#/5"
+        },
+        "flags": 2,
+        "description": "The extension last update date"
+      },
+      "type": {
+        "type": {
+          "$ref": "#/11"
+        },
+        "flags": 4,
+        "description": "The type of the extension"
+      },
+      "packagePath": {
+        "type": {
+          "$ref": "#/13"
+        },
+        "flags": 4,
+        "description": "Absolute path to the extension .vsix file. Only used when creating or updating an extension"
+      },
+      "ignoreVersionErrors": {
+        "type": {
+          "$ref": "#/14"
+        },
+        "flags": 4,
+        "description": "Ignore errors if the current version is lower or equal than the currently published one. This does not update the extension if an error is raised and this property is set to true."
+      },
+      "errorMessage": {
+        "type": {
+          "$ref": "#/16"
+        },
+        "flags": 2,
+        "description": "The triggered error when update or creating an extension"
+      }
+    },
+    "additionalProperties": null,
+    "sensitive": null
+  },
+  {
+    "$type": "ResourceType",
+    "name": "VstsPublisher/VstsExtension",
+    "scopeType": 0,
+    "readOnlyScopes": null,
+    "body": {
+      "$ref": "#/17"
+    },
+    "flags": 0,
+    "functions": null
+  },
+  {
+    "$type": "NullType"
+  },
+  {
+    "$type": "UnionType",
+    "elements": [
+      {
+        "$ref": "#/5"
+      },
+      {
+        "$ref": "#/19"
+      }
+    ]
+  },
+  {
+    "$type": "ObjectType",
+    "name": "VstsPublisher",
+    "properties": {
+      "name": {
+        "type": {
+          "$ref": "#/5"
+        },
+        "flags": 17,
+        "description": "The name of the publisher"
+      },
+      "publisherId": {
+        "type": {
+          "$ref": "#/5"
+        },
+        "flags": 2,
+        "description": "The publisher identifier"
+      },
+      "publisherDomain": {
+        "type": {
+          "$ref": "#/20"
+        },
+        "flags": 0,
+        "description": "The publisher domain"
+      },
+      "isVerified": {
+        "type": {
+          "$ref": "#/14"
+        },
+        "flags": 2,
+        "description": "If the publisher domain has been verified"
+      }
+    },
+    "additionalProperties": null,
+    "sensitive": null
+  },
+  {
+    "$type": "ResourceType",
+    "name": "VstsPublisher",
+    "scopeType": 0,
+    "readOnlyScopes": null,
+    "body": {
+      "$ref": "#/21"
+    },
+    "flags": 0,
+    "functions": null
+  }
+]

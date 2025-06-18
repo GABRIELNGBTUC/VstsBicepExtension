@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PublishAot>true</PublishAot>
+        <InvariantGlobalization>true</InvariantGlobalization>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Azure.Bicep.Types" Version="0.5.110"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\TucRail.Bicep.VsMarketplace.Shared\TucRail.Bicep.VsMarketplace.Shared.csproj"/>
+    </ItemGroup>
+
+
+</Project>

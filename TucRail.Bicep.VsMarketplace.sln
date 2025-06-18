@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TucRail.Bicep.VsMarketplace.CLI", "TucRail.Bicep.VsMarketplace\TucRail.Bicep.VsMarketplace.CLI\TucRail.Bicep.VsMarketplace.CLI.csproj", "{213A99E1-5660-4BA5-801C-41D0456544CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TucRail.Bicep.VsMarketplace.ExtensionHost", "TucRail.Bicep.VsMarketplace\TucRail.Bicep.VsMarketplace.ExtensionHost\TucRail.Bicep.VsMarketplace.ExtensionHost.csproj", "{456E82D2-6464-41DA-A04A-A5E713183F2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TucRail.Bicep.VsMarketplace.Generator", "TucRail.Bicep.VsMarketplace\TucRail.Bicep.VsMarketplace.Generator\TucRail.Bicep.VsMarketplace.Generator.csproj", "{1610FE78-0C19-4B67-94F4-4D96F0AA5343}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TucRail.Bicep.VsMarketplace.Shared", "TucRail.Bicep.VsMarketplace\TucRail.Bicep.VsMarketplace.Shared\TucRail.Bicep.VsMarketplace.Shared.csproj", "{0C001BF4-68EF-4541-B1C9-D2781069F8D6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{213A99E1-5660-4BA5-801C-41D0456544CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{213A99E1-5660-4BA5-801C-41D0456544CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{213A99E1-5660-4BA5-801C-41D0456544CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{213A99E1-5660-4BA5-801C-41D0456544CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{456E82D2-6464-41DA-A04A-A5E713183F2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{456E82D2-6464-41DA-A04A-A5E713183F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{456E82D2-6464-41DA-A04A-A5E713183F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{456E82D2-6464-41DA-A04A-A5E713183F2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1610FE78-0C19-4B67-94F4-4D96F0AA5343}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1610FE78-0C19-4B67-94F4-4D96F0AA5343}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1610FE78-0C19-4B67-94F4-4D96F0AA5343}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1610FE78-0C19-4B67-94F4-4D96F0AA5343}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C001BF4-68EF-4541-B1C9-D2781069F8D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C001BF4-68EF-4541-B1C9-D2781069F8D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C001BF4-68EF-4541-B1C9-D2781069F8D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C001BF4-68EF-4541-B1C9-D2781069F8D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <RootNamespace>TucRail.Bicep.VsMarketplace.CLI</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommandLineParser" Version="2.9.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\TucRail.Bicep.VsMarketplace.Generator\TucRail.Bicep.VsMarketplace.Generator.csproj"/>
+        <ProjectReference Include="..\TucRail.Bicep.VsMarketplace.Shared\TucRail.Bicep.VsMarketplace.Shared.csproj"/>
+    </ItemGroup>
+
+</Project>
