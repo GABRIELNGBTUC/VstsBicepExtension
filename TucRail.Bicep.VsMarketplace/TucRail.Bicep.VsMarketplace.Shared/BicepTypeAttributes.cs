@@ -5,7 +5,7 @@ using Azure.Bicep.Types.Concrete;
 namespace TucRail.Bicep.VsMarketplace.Shared;
 
 /// <summary>
-/// When used on a property. Means that the property will be exposed as a property of the bicep resource.
+/// When used on a property. Means that the property will be exposed as a property of the bicep type.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public class TypeAnnotationAttribute : Attribute
@@ -85,29 +85,18 @@ public class BicepParentTypeAttribute : Attribute
 }
 
 /// <summary>
-/// When used on a class. Means that it will be generated as a bicep resource with the same name as the class
+/// <para>When used on a class. Means that it will be generated as a bicep resource with the same name as the class. </para>
+/// <para> Is not required for types that are used as properties or for the type used to configure an extension. </para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public class BicepSerializableType : Attribute
-{
-    public BicepSerializableType()
-    {
-    }
-}
+public class BicepSerializableType : Attribute;
 
 /// <summary>
-/// Marks the type to be added to the "types.json" when types are generated for the assembly
-/// </summary>
-[AttributeUsage(AttributeTargets.Property)]
-public class BicepSerializableProperty : Attribute
-{
-    public BicepSerializableProperty()
-    {
-    }
-}
-
-/// <summary>
-/// 
+/// <para>When used, generates a tagged union type that uses all the types provided and the provided property name as discriminator</para>
+/// <para>When creating a bicep type with this attribute it is recommended to:</para>
+/// <para>1. Use inheritance and records on the referenced types</para>
+/// <para>2. Define the property referenced by <see cref="DiscriminatorPropertyName"/> in the inherited types</para>
+/// <para>3. Use enums and the attribute <see cref="BicepStringLiteralValue"/> along the <see langword="nameOf"/> keyword to avoid magic values</para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class BicepDiscriminatorType : Attribute
