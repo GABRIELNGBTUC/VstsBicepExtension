@@ -20,7 +20,7 @@ namespace TucRail.Bicep.VsMarketplace.CLI
 
         private static void Main(Options options)
         {
-            var types = TypeGenerator.GenerateTypes("test", "1.0.0", typeof(Configuration), typeof(BicepParentTypeAttribute));
+            var types = TypeGenerator.GenerateTypes("test", "1.0.0", typeof(ConfigurationBase), typeof(BicepParentTypeAttribute));
             var outdir = Path.GetFullPath(options.Outdir!);
 
             Directory.CreateDirectory(outdir);
