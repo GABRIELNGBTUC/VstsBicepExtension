@@ -9,6 +9,7 @@ using Azure.Bicep.Types.Index;
 using Azure.Bicep.Types.Serialization;
 using TucRail.Bicep.VsMarketplace.Generator;
 using TucRail.Bicep.VsMarketplace.Shared;
+using TucRail.Bicep.VsMarketplace.Shared.Models;
 
 namespace TucRail.Bicep.VsMarketplace.Generator;
 
@@ -193,41 +194,60 @@ public static class TypeGenerator
         return factory.GetReference(type);
     }
 
+    /// <summary>
+    /// Generates bicep types and index for the provided assembly
+    /// </summary>
+    /// <param name="extensionName">Name of the extension</param>
+    /// <param name="version">Version of the extension in SemVersion format</param>
+    /// <param name="configurationType">Type used to generate the configuration. Pass <see langword="null"/> if no configuration is required.</param>
+    /// <param name="sourceAssemblyType">A type present in the assembly where your serializable types are contained.</param>
+    /// <returns></returns>
     [RequiresUnreferencedCode("Retrieves the valid bicep types from the current assembly")]
     public static Dictionary<string, string> GenerateTypes(string extensionName, string version,
-        Type configurationType, Type? sourceAssembly = null)
+        Type? configurationType, Type? sourceAssemblyType = null)
     {
         var factory = new TypeFactory([]);
 
         var typeCache = new ConcurrentDictionary<Type, TypeBase>();
 
-        var configurationTypeBase = GenerateForRecord(factory, typeCache, configurationType);
+        
 
-        TypeBase configurationTypeReference;
+        TypeBase? configurationTypeReference;
 
-        if (configurationTypeBase is ObjectType configurationTypeBaseObject)
+        if (configurationType is null)
         {
-            var configuration =
-                factory.Create(() => new ObjectType("configuration", configurationTypeBaseObject.Properties, null));
-            configurationTypeReference = configuration;
+            configurationTypeReference = null;
         }
+
         else
         {
-            configurationTypeReference = configurationTypeBase;
+            var configurationTypeBase = GenerateForRecord(factory, typeCache, configurationType);
+
+            if (configurationTypeBase is ObjectType configurationTypeBaseObject)
+            {
+                var configuration =
+                    factory.Create(() => new ObjectType("configuration", configurationTypeBaseObject.Properties, null));
+                configurationTypeReference = configuration;
+            }
+            else
+            {
+                configurationTypeReference = configurationTypeBase;
+            }
         }
-        
 
         var settings = new TypeSettings(
             name: extensionName,
             version: version,
             isSingleton: true,
-            configurationType: new CrossFileTypeReference("types.json", factory.GetIndex(configurationTypeReference)));
+            configurationType: new CrossFileTypeReference("types.json", factory.GetIndex(configurationTypeReference ?? 
+                factory.GetReferenceFromType(new ObjectType("configuration", new Dictionary<string, ObjectTypeProperty>(), null)).Type 
+                )));
 
         var serializableTypes =
-            sourceAssembly is null
+            sourceAssemblyType is null
                 ? Assembly.GetExecutingAssembly().GetTypes()
                     .Where(t => t.GetCustomAttribute<BicepSerializableType>() != null)
-                : Assembly.GetAssembly(sourceAssembly).GetTypes()
+                : Assembly.GetAssembly(sourceAssemblyType).GetTypes()
                     .Where(t => t.GetCustomAttribute<BicepSerializableType>() != null);
         var resourceTypes = serializableTypes.Select(type => GenerateResource(factory, typeCache, type));
 
