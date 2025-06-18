@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.Gallery.WebApi;
 using Microsoft.VisualStudio.Services.OAuth;
 using Microsoft.VisualStudio.Services.WebApi;
+using TucRail.Bicep.VsMarketplace.Shared;
 using TucRail.Bicep.VsMarketplace.Shared.Models;
 using ErrorDetail = Bicep.Local.Extension.Protocol.ErrorDetail;
 using ResourceReference = Bicep.Local.Extension.Protocol.ResourceReference;
@@ -30,7 +31,9 @@ public static class RequestHelper
         var configuration = JsonSerializer.Deserialize<Configuration>(config, new JsonSerializerOptions(JsonSerializerDefaults.Web));
         if (configuration is null)
         {
-            return CreateErrorResponse("configuration-read-failure", $"Failed to read configuration from object: {config?.ToJsonString()}");
+            Console.WriteLine($"Failed to read configuration from object: {config?.ToJsonString()}");
+            return CreateErrorResponse(ErrorCodes.ConfigurationDeserializationFailure, 
+                ErrorCodes.GetConfigurationDeserializationFailureMessage());
         }
         VssCredentials? credentials = null;
         switch (configuration.AuthenticationMode)
@@ -67,7 +70,7 @@ public static class RequestHelper
             //     return CreateErrorResponse("ApiError", apiException.ApiError.Message, errorDetails);
             // }
 
-            return CreateErrorResponse("UnhandledError", exception.Message + "\n" + "Call stack" + exception.StackTrace);
+            return CreateErrorResponse(ErrorCodes.UnhandledException, ErrorCodes.GetUnhandledExceptionMessage(exception.ToString()));
         }
     }
 

@@ -6,6 +6,7 @@ using Bicep.Local.Extension.Protocol;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.Gallery.WebApi;
 using TucRail.Bicep.VsMarketplace.ExtensionHost.Helpers;
+using TucRail.Bicep.VsMarketplace.Shared;
 using TucRail.Bicep.VsMarketplace.Shared.Models;
 
 namespace TucRail.Bicep.VsMarketplace.ExtensionHost.Handlers;
@@ -27,15 +28,20 @@ public class ExtensionHandler : IResourceHandler
             Console.WriteLine(properties);
             if (!File.Exists(properties.PackagePath))
             {
-                return RequestHelper.CreateErrorResponse("file-not-found",
-                    $"The file with the path '{properties.PackagePath} does not exists'");
+                return RequestHelper.CreateErrorResponse(ErrorCodes.FileNotFound, 
+                    ErrorCodes.GetFileNotFoundMessage(properties.PackagePath));
             }
 
-            if (properties.Type is null || properties.PackagePath is null)
+            if (properties.Type is null)
             {
-                return RequestHelper.CreateErrorResponse("property-not-found",
-                    $"The property {RequestHelper.ToCamelCase(nameof(VstsExtension.Type))} or " +
-                    $"{RequestHelper.ToCamelCase(nameof(VstsExtension.PackagePath))} is missing.");
+                return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound, 
+                    ErrorCodes.GetPropertyNotFoundMessage(RequestHelper.ToCamelCase(nameof(VstsExtension.Type))));
+            }
+
+            if (properties.PackagePath is null)
+            {
+                return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound, 
+                    ErrorCodes.GetPropertyNotFoundMessage(RequestHelper.ToCamelCase(nameof(VstsExtension.PackagePath))));
             }
 
             try
@@ -58,13 +64,14 @@ public class ExtensionHandler : IResourceHandler
                     }
                     else
                     {
-                        return RequestHelper.CreateErrorResponse("VssException", e.Message);
+                        return RequestHelper.CreateErrorResponse(ErrorCodes.VssException, ErrorCodes.GetVssExceptionMessage(e.Message));
                     }
                     
                 }
             }
             catch (Exception e)
             {
+                Console.WriteLine("Unexpected error during update: {0}", e.Message);
                 await using var fileStream = new FileStream(properties.PackagePath!, FileMode.Open);
                 //Create
                 try
@@ -72,16 +79,16 @@ public class ExtensionHandler : IResourceHandler
                     await client.CreateExtensionAsync(fileStream, properties.GetExtensionType(),
                         cancellationToken: cancellationToken);
                 }
-                catch (VssException ex)
+                catch (VssException vssException)
                 {
-                    var (currentVersion, updatedVersion) = ExtractVersionsFromErrorMessage(ex.Message);
+                    var (currentVersion, updatedVersion) = ExtractVersionsFromErrorMessage(vssException.Message);
                     if (properties.IgnoreVersionErrors  && currentVersion is not null && updatedVersion is not null)
                     {
                         properties = properties with {ErrorMessage = e.Message};
                     }
                     else
                     {
-                        return RequestHelper.CreateErrorResponse("VssException", ex.Message);
+                        return RequestHelper.CreateErrorResponse(ErrorCodes.VssException, ErrorCodes.GetVssExceptionMessage(vssException.Message));
                     }
                     
                 }
@@ -115,14 +122,14 @@ public class ExtensionHandler : IResourceHandler
             var extensionPublisher = RequestHelper.GetIdentifierData(request, nameof(VstsExtension.PublisherName));
             if (extensionPublisher is null)
             {
-                return RequestHelper.CreateErrorResponse("property-not-found",
-                    $"Could not find the property {RequestHelper.ToCamelCase(nameof(VstsExtension.PublisherName))}.");
+                return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound,
+                    ErrorCodes.GetPropertyNotFoundMessage(RequestHelper.ToCamelCase(nameof(VstsExtension.PublisherName))));
             }
 
             if (extensionName is null)
             {
-                return RequestHelper.CreateErrorResponse("property-not-found",
-                    $"Could not find the property {RequestHelper.ToCamelCase(nameof(VstsExtension.Name))}.");
+                return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound,
+                    ErrorCodes.GetPropertyNotFoundMessage(RequestHelper.ToCamelCase(nameof(VstsExtension.Name))));
             }
             var extension = await client.GetExtensionAsync(extensionPublisher.ToString(), extensionName.ToString(),
                 cancellationToken: cancellationToken);
