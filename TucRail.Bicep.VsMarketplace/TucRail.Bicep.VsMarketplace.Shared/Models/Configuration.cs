@@ -20,15 +20,17 @@ public record ConfigurationBase(
     string SomeRandomProperty);
 
 public record ConfigurationEntra(
+    string SomeRandomProperty,
     [property: TypeAnnotation("Authentication mode to login to the marketplace", ObjectTypePropertyFlags.Required), BicepStringLiteralValue(nameof(AuthenticationMode.Entra))]
-    AuthenticationMode AuthenticationMode);
+    AuthenticationMode AuthenticationMode) : ConfigurationBase(SomeRandomProperty);
 
 public record ConfigurationPat(
+    string SomeRandomProperty,
     [property: TypeAnnotation("PAT token to use", ObjectTypePropertyFlags.Required, true)]
     string Token,
     [property: TypeAnnotation("Authentication mode to login to the marketplace", ObjectTypePropertyFlags.Required), BicepStringLiteralValue(nameof(AuthenticationMode.PAT))]
     AuthenticationMode AuthenticationMode
-);
+) : ConfigurationBase(SomeRandomProperty);
 
 public enum AuthenticationMode
 {
