@@ -10,6 +10,12 @@ namespace TucRail.Bicep.VsMarketplace.Shared;
 [AttributeUsage(AttributeTargets.Property)]
 public class TypeAnnotationAttribute : Attribute
 {
+    /// <summary>
+    /// Defines a property that will be added to the bicep type.
+    /// </summary>
+    /// <param name="description"></param>
+    /// <param name="flags"></param>
+    /// <param name="isSecure"></param>
     public TypeAnnotationAttribute(
         string? description,
         ObjectTypePropertyFlags flags = ObjectTypePropertyFlags.None,
@@ -101,13 +107,22 @@ public class BicepSerializableProperty : Attribute
 }
 
 /// <summary>
-/// When used, find all classes that inherits this type and creates a union type with the property
+/// 
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class BicepDiscriminatorType : Attribute
 {
+    /// <summary>
+    /// The name of the bicep type that will be generated. Recommended to use nameof(T).
+    /// </summary>
     public string DiscrminatorTypeName { get; }
+    /// <summary>
+    /// The list of types that will be part of the union. All of these types should include a property with the name specified by DiscriminatorPropertyName and implementing the attribute TypeAnnotationAttribute
+    /// </summary>
     public Dictionary<string, Type> DiscriminatorTypes { get; }
+    /// <summary>
+    /// The name of the property shared by the discriminated types. Should use pascalCase.
+    /// </summary>
     public string DiscriminatorPropertyName { get; }
 
     public BicepDiscriminatorType(string discrminatorTypeName, string discriminatorPropertyName, params Type[] discriminatorTypes)
@@ -118,7 +133,11 @@ public class BicepDiscriminatorType : Attribute
     }
 }
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+/// <summary>
+/// Tells to the type generator that the following property is a string literal with a hardcoded value. To be used on the property that
+/// allows to differentiate discriminated types
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
 public class BicepStringLiteralValue : Attribute
 {
     public string Value { get; }
