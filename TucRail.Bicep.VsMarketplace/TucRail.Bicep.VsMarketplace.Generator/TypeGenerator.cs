@@ -56,9 +56,11 @@ public static class TypeGenerator
         }
         else
         {
-            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var property in type
+                         .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                         .Where(p => !type.BaseType.GetProperties().Select(prop => prop.Name).Contains(p.Name)))
             {
-                var annotation = property.GetCustomAttributes<TypeAnnotationAttribute>(true).FirstOrDefault();
+                var annotation = property.GetCustomAttributes<TypeAnnotationAttribute>(false).FirstOrDefault();
                 var propertyType = property.PropertyType;
                 TypeBase typeReference;
                 var originalPropertyType = propertyType;
