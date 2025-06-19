@@ -9,7 +9,7 @@ namespace TucRail.Bicep.VsMarketplace.ExtensionHost.Handlers;
 
 public class PublisherHandler : IResourceHandler
 {
-    public string ResourceType => "VstsPublisher";
+    public string ResourceType => nameof(VstsPublisher);
 
     private record Identifiers(
         string? Name);

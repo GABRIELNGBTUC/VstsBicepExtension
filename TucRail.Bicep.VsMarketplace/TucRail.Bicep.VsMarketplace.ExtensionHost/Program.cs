@@ -21,7 +21,8 @@ public static class Program
 
     public static void RegisterHandlers(ResourceDispatcherBuilder builder) => builder
         .AddHandler(new PublisherHandler())
-        .AddHandler(new ExtensionHandler());
+        .AddHandler(new ExtensionHandler())
+        .AddHandler(new PackageHandler());
 }
 
 public class KestrelProviderExtension : ProviderExtension

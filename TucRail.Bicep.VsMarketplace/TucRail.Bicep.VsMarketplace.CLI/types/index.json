@@ -1,10 +1,13 @@
 {
   "resources": {
     "VstsPublisher/VstsExtension": {
-      "$ref": "types.json#/19"
+      "$ref": "types.json#/22"
+    },
+    "VstsPublisher/VstsExtension/VstsPackage": {
+      "$ref": "types.json#/24"
     },
     "VstsPublisher": {
-      "$ref": "types.json#/23"
+      "$ref": "types.json#/28"
     }
   },
   "resourceFunctions": {},

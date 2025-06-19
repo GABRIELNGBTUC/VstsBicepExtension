@@ -81,6 +81,27 @@
     }
   },
   {
+    "$type": "ObjectType",
+    "name": "String[]",
+    "properties": {},
+    "additionalProperties": null,
+    "sensitive": null
+  },
+  {
+    "$type": "NullType"
+  },
+  {
+    "$type": "UnionType",
+    "elements": [
+      {
+        "$ref": "#/7"
+      },
+      {
+        "$ref": "#/8"
+      }
+    ]
+  },
+  {
     "$type": "StringLiteralType",
     "value": "AzureDevOps"
   },
@@ -96,13 +117,13 @@
     "$type": "UnionType",
     "elements": [
       {
-        "$ref": "#/7"
+        "$ref": "#/10"
       },
       {
-        "$ref": "#/8"
+        "$ref": "#/11"
       },
       {
-        "$ref": "#/9"
+        "$ref": "#/12"
       }
     ]
   },
@@ -113,10 +134,10 @@
     "$type": "UnionType",
     "elements": [
       {
-        "$ref": "#/10"
+        "$ref": "#/13"
       },
       {
-        "$ref": "#/11"
+        "$ref": "#/14"
       }
     ]
   },
@@ -130,7 +151,7 @@
         "$ref": "#/0"
       },
       {
-        "$ref": "#/13"
+        "$ref": "#/16"
       }
     ]
   },
@@ -147,7 +168,7 @@
         "$ref": "#/0"
       },
       {
-        "$ref": "#/16"
+        "$ref": "#/19"
       }
     ]
   },
@@ -176,30 +197,37 @@
         "flags": 2,
         "description": "The extension last update date"
       },
+      "versions": {
+        "type": {
+          "$ref": "#/9"
+        },
+        "flags": 2,
+        "description": "The extension versions"
+      },
       "type": {
         "type": {
-          "$ref": "#/12"
+          "$ref": "#/15"
         },
         "flags": 4,
         "description": "The type of the extension"
       },
       "packagePath": {
         "type": {
-          "$ref": "#/14"
+          "$ref": "#/17"
         },
         "flags": 4,
         "description": "Absolute path to the extension .vsix file. Only used when creating or updating an extension"
       },
       "ignoreVersionErrors": {
         "type": {
-          "$ref": "#/15"
+          "$ref": "#/18"
         },
         "flags": 4,
         "description": "Ignore errors if the current version is lower or equal than the currently published one. This does not update the extension if an error is raised and this property is set to true."
       },
       "errorMessage": {
         "type": {
-          "$ref": "#/17"
+          "$ref": "#/20"
         },
         "flags": 2,
         "description": "The triggered error when update or creating an extension"
@@ -214,7 +242,54 @@
     "scopeType": 0,
     "readOnlyScopes": null,
     "body": {
-      "$ref": "#/18"
+      "$ref": "#/21"
+    },
+    "flags": 0,
+    "functions": null
+  },
+  {
+    "$type": "ObjectType",
+    "name": "VstsPackage",
+    "properties": {
+      "publisherName": {
+        "type": {
+          "$ref": "#/0"
+        },
+        "flags": 17,
+        "description": "The name of the publisher"
+      },
+      "extensionName": {
+        "type": {
+          "$ref": "#/0"
+        },
+        "flags": 17,
+        "description": "The name of the extension"
+      },
+      "version": {
+        "type": {
+          "$ref": "#/0"
+        },
+        "flags": 17,
+        "description": "The version of the extension"
+      },
+      "destinationPath": {
+        "type": {
+          "$ref": "#/0"
+        },
+        "flags": 17,
+        "description": "Destination directory of the extension after the download"
+      }
+    },
+    "additionalProperties": null,
+    "sensitive": null
+  },
+  {
+    "$type": "ResourceType",
+    "name": "VstsPublisher/VstsExtension/VstsPackage",
+    "scopeType": 0,
+    "readOnlyScopes": null,
+    "body": {
+      "$ref": "#/23"
     },
     "flags": 0,
     "functions": null
@@ -229,7 +304,7 @@
         "$ref": "#/0"
       },
       {
-        "$ref": "#/20"
+        "$ref": "#/25"
       }
     ]
   },
@@ -253,14 +328,14 @@
       },
       "publisherDomain": {
         "type": {
-          "$ref": "#/21"
+          "$ref": "#/26"
         },
         "flags": 0,
         "description": "The publisher domain"
       },
       "isVerified": {
         "type": {
-          "$ref": "#/15"
+          "$ref": "#/18"
         },
         "flags": 2,
         "description": "If the publisher domain has been verified"
@@ -275,7 +350,7 @@
     "scopeType": 0,
     "readOnlyScopes": null,
     "body": {
-      "$ref": "#/22"
+      "$ref": "#/27"
     },
     "flags": 0,
     "functions": null

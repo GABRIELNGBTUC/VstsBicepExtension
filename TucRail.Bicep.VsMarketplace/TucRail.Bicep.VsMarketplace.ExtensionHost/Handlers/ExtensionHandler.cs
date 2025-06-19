@@ -13,7 +13,10 @@ namespace TucRail.Bicep.VsMarketplace.ExtensionHost.Handlers;
 
 public class ExtensionHandler : IResourceHandler
 {
-    public string ResourceType => "VstsPublisher/VstsExtension";
+    public string ResourceType => $"{nameof(VstsPublisher)}/{nameof(VstsExtension)}";
+
+    private const string ExtensionAlreadyExistsMessage =
+        "The extension already exists";
 
     private record Identifiers(
         string? Name,
@@ -23,74 +26,79 @@ public class ExtensionHandler : IResourceHandler
         CancellationToken cancellationToken)
         => RequestHelper.HandleRequest(request.Config, async client =>
         {
+            Console.WriteLine($"Starting create or update operation for {ResourceType}");
             Console.WriteLine(JsonSerializer.Serialize(request, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
             var properties = RequestHelper.GetProperties<VstsExtension>(request.Properties);
             Console.WriteLine(properties);
             if (!File.Exists(properties.PackagePath))
             {
-                return RequestHelper.CreateErrorResponse(ErrorCodes.FileNotFound, 
+                Console.WriteLine("File not found: {0}", properties.PackagePath);
+                return RequestHelper.CreateErrorResponse(ErrorCodes.FileNotFound,
                     ErrorCodes.GetFileNotFoundMessage(properties.PackagePath));
             }
 
             if (properties.Type is null)
             {
-                return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound, 
+                Console.WriteLine("Type not found");
+                return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound,
                     ErrorCodes.GetPropertyNotFoundMessage(RequestHelper.ToCamelCase(nameof(VstsExtension.Type))));
             }
 
             if (properties.PackagePath is null)
             {
-                return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound, 
-                    ErrorCodes.GetPropertyNotFoundMessage(RequestHelper.ToCamelCase(nameof(VstsExtension.PackagePath))));
+                Console.WriteLine("Package path not found");
+                return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound,
+                    ErrorCodes.GetPropertyNotFoundMessage(
+                        RequestHelper.ToCamelCase(nameof(VstsExtension.PackagePath))));
             }
 
             try
             {
-                var extension = await client.GetExtensionAsync(properties.PublisherName, properties.Name,
-                    cancellationToken: cancellationToken);
                 //Update resource
+                Console.WriteLine("Creating filestream");
                 await using var fileStream = new FileStream(properties.PackagePath, FileMode.Open);
-                try
-                {
+
+                    Console.WriteLine("Updating extension");
                     await client.UpdateExtensionAsync(fileStream, properties.PublisherName, properties.Name,
                         cancellationToken: cancellationToken);
-                }
-                catch (VssException e)
-                {
-                    var (currentVersion, updatedVersion) = ExtractVersionsFromErrorMessage(e.Message);
-                    if (properties.IgnoreVersionErrors  && currentVersion is not null && updatedVersion is not null)
-                    {
-                        properties = properties with {ErrorMessage = e.Message};
-                    }
-                    else
-                    {
-                        return RequestHelper.CreateErrorResponse(ErrorCodes.VssException, ErrorCodes.GetVssExceptionMessage(e.Message));
-                    }
-                    
-                }
+
+                var extension = await client.GetExtensionAsync(properties.PublisherName, properties.Name,
+                    cancellationToken: cancellationToken);
+
+                properties = properties with { Versions = extension is null ? [] : extension.Versions.Select(v => v.Version).ToArray() };
             }
             catch (Exception e)
             {
                 Console.WriteLine("Unexpected error during update: {0}", e.Message);
+                Console.WriteLine("Creating filestream");
                 await using var fileStream = new FileStream(properties.PackagePath!, FileMode.Open);
                 //Create
                 try
                 {
+                    Console.WriteLine("Creating extension");
                     await client.CreateExtensionAsync(fileStream, properties.GetExtensionType(),
                         cancellationToken: cancellationToken);
+
+                    var extension = await client.GetExtensionAsync(properties.PublisherName, properties.Name,
+                        cancellationToken: cancellationToken);
+
+                    properties = properties with { Versions = extension is null ? [] : extension.Versions.Select(v => v.Version).ToArray() };
                 }
                 catch (VssException vssException)
                 {
                     var (currentVersion, updatedVersion) = ExtractVersionsFromErrorMessage(vssException.Message);
-                    if (properties.IgnoreVersionErrors  && currentVersion is not null && updatedVersion is not null)
+                    if (properties.IgnoreVersionErrors &&
+                         ((currentVersion is not null && updatedVersion is not null) ||
+                          vssException.Message.Contains(ExtensionAlreadyExistsMessage,
+                              StringComparison.OrdinalIgnoreCase)))
                     {
-                        properties = properties with {ErrorMessage = e.Message};
+                        properties = properties with { ErrorMessage = vssException.Message };
                     }
                     else
                     {
-                        return RequestHelper.CreateErrorResponse(ErrorCodes.VssException, ErrorCodes.GetVssExceptionMessage(vssException.Message));
+                        return RequestHelper.CreateErrorResponse(ErrorCodes.VssException,
+                            ErrorCodes.GetVssExceptionMessage(vssException.Message));
                     }
-                    
                 }
             }
 
@@ -103,6 +111,7 @@ public class ExtensionHandler : IResourceHandler
         CancellationToken cancellationToken)
         => RequestHelper.HandleRequest(request.Config, async client =>
         {
+            Console.WriteLine($"Starting preview operation for {ResourceType}");
             var properties = RequestHelper.GetProperties<VstsExtension>(request.Properties);
 
             await Task.Yield();
@@ -116,14 +125,17 @@ public class ExtensionHandler : IResourceHandler
     public Task<LocalExtensionOperationResponse> Get(ResourceReference request, CancellationToken cancellationToken)
         => RequestHelper.HandleRequest(request.Config, async client =>
         {
+            Console.WriteLine($"Starting get operation for {ResourceType}");
             Console.WriteLine(JsonSerializer.Serialize(request,
                 new JsonSerializerOptions(JsonSerializerDefaults.Web)));
+            Console.WriteLine("Reading identifiers from request");
             var extensionName = RequestHelper.GetIdentifierData(request, nameof(VstsExtension.Name));
             var extensionPublisher = RequestHelper.GetIdentifierData(request, nameof(VstsExtension.PublisherName));
             if (extensionPublisher is null)
             {
                 return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound,
-                    ErrorCodes.GetPropertyNotFoundMessage(RequestHelper.ToCamelCase(nameof(VstsExtension.PublisherName))));
+                    ErrorCodes.GetPropertyNotFoundMessage(
+                        RequestHelper.ToCamelCase(nameof(VstsExtension.PublisherName))));
             }
 
             if (extensionName is null)
@@ -131,16 +143,25 @@ public class ExtensionHandler : IResourceHandler
                 return RequestHelper.CreateErrorResponse(ErrorCodes.PropertyNotFound,
                     ErrorCodes.GetPropertyNotFoundMessage(RequestHelper.ToCamelCase(nameof(VstsExtension.Name))));
             }
+            
+            Console.WriteLine("Getting extension");
+            Console.WriteLine($"Extension name: {extensionName}");
+            Console.WriteLine($"Extension publisher: {extensionPublisher}");
+
             var extension = await client.GetExtensionAsync(extensionPublisher.ToString(), extensionName.ToString(),
                 cancellationToken: cancellationToken);
 
             await Task.Yield();
 
             // Remove any property that is not needed in the response
+            
+            Console.WriteLine("Extension found");
+            Console.WriteLine(JsonSerializer.Serialize(extension));
 
             return RequestHelper.CreateSuccessResponse(request, new VstsExtension(extension.ExtensionName,
                     extension.Publisher.PublisherName,
-                    extension.LastUpdated.ToString(CultureInfo.InvariantCulture)),
+                    extension.LastUpdated.ToString(CultureInfo.InvariantCulture),
+                    extension.Versions is null ? [] : extension.Versions.Select(v => v.Version).ToArray()),
                 new Identifiers(extension.ExtensionName, extension.Publisher.PublisherName));
         });
 
@@ -148,7 +169,7 @@ public class ExtensionHandler : IResourceHandler
     {
         throw new NotImplementedException();
     }
-    
+
     private static (string? CurrentVersion, string? UpdatedVersion) ExtractVersionsFromErrorMessage(string message)
     {
         // Regex pour rechercher les versions actuelles et mises à jour
@@ -166,5 +187,4 @@ public class ExtensionHandler : IResourceHandler
 
         return (CurrentVersion: null, UpdatedVersion: null);
     }
-
 }

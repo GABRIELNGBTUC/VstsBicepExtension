@@ -20,6 +20,8 @@ public record VstsExtension(
     string PublisherName,
     [property: TypeAnnotation("The extension last update date", ObjectTypePropertyFlags.ReadOnly)]
     string LastUpdatedDate,
+    [property: TypeAnnotation("The extension versions", ObjectTypePropertyFlags.ReadOnly)]
+    string[]? Versions,
     [property: TypeAnnotation("The type of the extension", ObjectTypePropertyFlags.WriteOnly),
                JsonConverter(typeof(NullableBicepEnumConverter<ExtensionType>))
     ]

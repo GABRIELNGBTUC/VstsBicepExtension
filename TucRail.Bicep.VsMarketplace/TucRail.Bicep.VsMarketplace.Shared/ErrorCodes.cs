@@ -5,6 +5,9 @@ public static class ErrorCodes
     public const string FileNotFound = "file-not-found";
     public static string GetFileNotFoundMessage(string? filePath) => $"The file with the path '{filePath ?? "null filePath"}' was not found.";
     
+    public const string DirectoryNotFound = "directory-not-found";
+    public static string GetDirectoryNotFoundMessage(string? directoryPath) => $"The directory with the path '{directoryPath ?? "null directoryPath"}' was not found.";
+    
     public const string PropertyNotFound = "property-not-found";
     public static string GetPropertyNotFoundMessage(string propertyName) => $"The property with the name '{propertyName}' was not found.";
     
