@@ -86,7 +86,7 @@ public class PackageHandler : IResourceHandler
             {
                 var extension = await client.GetExtensionAsync(extensionPublisher.ToString(), extensionName.ToString(),
                     cancellationToken: cancellationToken);
-                await using var fileStream = new FileStream(Path.Join(packageDownloadPath.ToString(), $"{extensionName.ToString()}.vsix"), FileMode.OpenOrCreate);
+                await using var fileStream = new FileStream(Path.Join(packageDownloadPath.ToString(), $"{extensionName.ToString()}-{extensionVersion.ToString()}.vsix"), FileMode.OpenOrCreate);
                 await using var downloadStream = await client.GetPackageAsync(extensionPublisher.ToString(), extensionName.ToString(),
                     extensionVersion.ToString(), cancellationToken: cancellationToken);
                 await Task.Yield();

@@ -121,14 +121,13 @@ public static class RequestHelper
     {
         if (string.IsNullOrEmpty(input) || char.IsLower(input[0]))
         {
-            return input; // Déjà en camelCase ou vide
+            return input;
         }
 
-        // Convertir la première lettre en minuscule
         return char.ToLower(input[0]) + input.Substring(1);
     }
     
 
-    public static JsonNode? GetIdentifierData(ResourceReference reference, string input) => reference.Identifiers[ToCamelCase(input)];
+    public static JsonNode? GetIdentifierData(ResourceReference reference, string propertyName) => reference.Identifiers[ToCamelCase(propertyName)];
     
 }

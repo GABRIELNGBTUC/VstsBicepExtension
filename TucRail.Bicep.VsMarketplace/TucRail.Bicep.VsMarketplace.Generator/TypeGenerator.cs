@@ -47,7 +47,7 @@ public static class TypeGenerator
             foreach (var kvp in discriminatorTypeAttribute.DiscriminatorTypes)
             {
                 var discriminatedTypeProperties = (ObjectType)GenerateForRecord(factory, typeCache, kvp.Value, true);
-                childTypesDictionary.Add(kvp.Key, GetReferenceFromType(factory, discriminatedTypeProperties));
+                childTypesDictionary.Add(kvp.Key, factory.GetReferenceFromType(discriminatedTypeProperties));
             }
             typeReference = factory.Create(() => new DiscriminatedObjectType(discriminatorTypeAttribute.DiscrminatorTypeName,
                 discriminatorTypeAttribute.DiscriminatorPropertyName, baseProperties.Properties
@@ -127,9 +127,9 @@ public static class TypeGenerator
                     || (originalPropertyType.IsGenericType &&
                         originalPropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
                 {
-                    var unionType = GetReferenceFromType(factory, new UnionType([
+                    var unionType = factory.GetReferenceFromType(new UnionType([
                         factory.GetReference(typeReference),
-                        GetReferenceFromType(factory, new NullType())
+                        factory.GetReferenceFromType(new NullType())
                     ]));
                     typeReference = unionType.Type;
                 }
@@ -167,7 +167,8 @@ public static class TypeGenerator
             realName,
             ScopeType.Unknown,
             null,
-                  GetReferenceFromType(factory, GenerateForRecord(factory, typeCache, type)),
+                  
+            factory.GetReferenceFromType(GenerateForRecord(factory, typeCache, type)),
             ResourceFlags.None,
             null));
     }
@@ -178,20 +179,6 @@ public static class TypeGenerator
         streamWriteFunc(memoryStream);
 
         return Encoding.UTF8.GetString(memoryStream.ToArray());
-    }
-
-    internal static ITypeReference GetReferenceFromType(TypeFactory factory, TypeBase type)
-    {
-        try
-        {
-            var typeReference = factory.Create(() => type);
-            return factory.GetReference(typeReference);
-        }
-        catch (ArgumentException ex)
-        {
-        }
-
-        return factory.GetReference(type);
     }
 
     /// <summary>
